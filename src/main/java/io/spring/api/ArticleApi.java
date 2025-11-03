@@ -49,6 +49,9 @@ public class ArticleApi {
     public ResponseEntity<?> updateArticle(@PathVariable("slug") String slug,
                                            @AuthenticationPrincipal User user,
                                            @Valid @RequestBody UpdateArticleParam updateArticleParam) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         return articleRepository.findBySlug(slug).map(article -> {
             if (!AuthorizationService.canWriteArticle(user, article)) {
                 throw new NoAuthorizationException();
@@ -65,6 +68,9 @@ public class ArticleApi {
     @DeleteMapping
     public ResponseEntity deleteArticle(@PathVariable("slug") String slug,
                                         @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         return articleRepository.findBySlug(slug).map(article -> {
             if (!AuthorizationService.canWriteArticle(user, article)) {
                 throw new NoAuthorizationException();

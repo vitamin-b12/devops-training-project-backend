@@ -13,6 +13,8 @@ public interface ArticleMapper {
 
     boolean findTag(@Param("tagName") String tagName);
 
+    Tag findTagByName(@Param("tagName") String tagName);
+
     void insertTag(@Param("tag") Tag tag);
 
     void insertArticleTagRelation(@Param("articleId") String articleId, @Param("tagId") String tagId);

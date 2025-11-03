@@ -26,10 +26,12 @@ public class CommentQueryService {
         if (commentData == null) {
             return Optional.empty();
         } else {
-            commentData.getProfileData().setFollowing(
-                userRelationshipQueryService.isUserFollowing(
-                    user.getId(),
-                    commentData.getProfileData().getId()));
+            if (user != null) {
+                commentData.getProfileData().setFollowing(
+                    userRelationshipQueryService.isUserFollowing(
+                        user.getId(),
+                        commentData.getProfileData().getId()));
+            }
         }
         return Optional.ofNullable(commentData);
     }

@@ -40,6 +40,9 @@ public class ArticlesApi {
     public ResponseEntity createArticle(@Valid @RequestBody NewArticleParam newArticleParam,
                                         BindingResult bindingResult,
                                         @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }
@@ -60,6 +63,9 @@ public class ArticlesApi {
     public ResponseEntity getFeed(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                   @RequestParam(value = "limit", defaultValue = "20") int limit,
                                   @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         return ResponseEntity.ok(articleQueryService.findUserFeed(user, new Page(offset, limit)));
     }
 

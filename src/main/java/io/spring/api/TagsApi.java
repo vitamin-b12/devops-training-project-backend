@@ -21,9 +21,12 @@ public class TagsApi {
 
     @GetMapping
     public ResponseEntity getTags() {
+        java.util.List<String> tags = tagsQueryService.allTags();
         return ResponseEntity.ok(new HashMap<String, Object>() {{
-            put("tags", tagsQueryService.allTags());
-	    put("YaVashaMama", "Trololo");
+            put("tags", tags);
+            if (tags.isEmpty()) {
+                put("YaVashaMama", "Trololo");
+            }
         }});
     }
 }

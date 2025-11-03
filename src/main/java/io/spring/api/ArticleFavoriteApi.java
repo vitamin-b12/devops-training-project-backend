@@ -38,6 +38,9 @@ public class ArticleFavoriteApi {
     @PostMapping
     public ResponseEntity favoriteArticle(@PathVariable("slug") String slug,
                                           @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         Article article = getArticle(slug);
         ArticleFavorite articleFavorite = new ArticleFavorite(article.getId(), user.getId());
         articleFavoriteRepository.save(articleFavorite);
@@ -47,6 +50,9 @@ public class ArticleFavoriteApi {
     @DeleteMapping
     public ResponseEntity unfavoriteArticle(@PathVariable("slug") String slug,
                                             @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         Article article = getArticle(slug);
         articleFavoriteRepository.find(article.getId(), user.getId()).ifPresent(favorite -> {
             articleFavoriteRepository.remove(favorite);

@@ -17,7 +17,10 @@ public class DefaultJwtServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        jwtService = new DefaultJwtService("123123", 3600);
+        // Use a strong secret key for HS512 (minimum 64 bytes/512 bits)
+        // This is a test secret - in production, use a proper secret key
+        String testSecret = "nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA";
+        jwtService = new DefaultJwtService(testSecret, 3600);
     }
 
     @Test

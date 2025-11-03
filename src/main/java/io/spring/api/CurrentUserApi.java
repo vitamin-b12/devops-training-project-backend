@@ -41,9 +41,15 @@ public class CurrentUserApi {
     @GetMapping
     public ResponseEntity currentUser(@AuthenticationPrincipal User currentUser,
                                       @RequestHeader(value = "Authorization") String authorization) {
+        if (currentUser == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
+        String token = authorization != null && authorization.split(" ").length > 1 
+            ? authorization.split(" ")[1] 
+            : "";
         UserData userData = userQueryService.findById(currentUser.getId()).get();
         return ResponseEntity.ok(userResponse(
-            new UserWithToken(userData, authorization.split(" ")[1])
+            new UserWithToken(userData, token)
         ));
     }
 
@@ -52,6 +58,9 @@ public class CurrentUserApi {
                                         @RequestHeader("Authorization") String token,
                                         @Valid @RequestBody UpdateUserParam updateUserParam,
                                         BindingResult bindingResult) {
+        if (currentUser == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
         }
@@ -64,9 +73,12 @@ public class CurrentUserApi {
             updateUserParam.getBio(),
             updateUserParam.getImage());
         userRepository.save(currentUser);
+        String tokenValue = token != null && token.split(" ").length > 1 
+            ? token.split(" ")[1] 
+            : "";
         UserData userData = userQueryService.findById(currentUser.getId()).get();
         return ResponseEntity.ok(userResponse(
-            new UserWithToken(userData, token.split(" ")[1])
+            new UserWithToken(userData, tokenValue)
         ));
     }
 

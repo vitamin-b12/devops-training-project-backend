@@ -26,12 +26,15 @@ public class ProfileQueryService {
         if (userData == null) {
             return Optional.empty();
         } else {
+            boolean isFollowing = currentUser != null 
+                ? userRelationshipQueryService.isUserFollowing(currentUser.getId(), userData.getId())
+                : false;
             ProfileData profileData = new ProfileData(
                 userData.getId(),
                 userData.getUsername(),
                 userData.getBio(),
                 userData.getImage(),
-                userRelationshipQueryService.isUserFollowing(currentUser.getId(), userData.getId()));
+                isFollowing);
             return Optional.of(profileData);
         }
     }

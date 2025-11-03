@@ -55,7 +55,10 @@
     </select>
 
     <select id="findTag" resultType="java.lang.Boolean">
-        select count(*) from tags where name = #{tagName}
+        select count(*) > 0 from tags where name = #{tagName}
+    </select>
+    <select id="findTagByName" resultMap="tag">
+        select id tagId, name tagName from tags where name = #{tagName}
     </select>
     <select id="findBySlug" resultMap="article">
         <include refid="selectArticle"/>

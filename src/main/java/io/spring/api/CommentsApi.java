@@ -53,6 +53,9 @@ public class CommentsApi {
                                                      @AuthenticationPrincipal User user,
                                                      @Valid @RequestBody NewCommentParam newCommentParam,
                                                      BindingResult bindingResult) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         Article article = findArticle(slug);
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException(bindingResult);
@@ -76,6 +79,9 @@ public class CommentsApi {
     public ResponseEntity deleteComment(@PathVariable("slug") String slug,
                                         @PathVariable("id") String commentId,
                                         @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         Article article = findArticle(slug);
         return commentRepository.findById(article.getId(), commentId).map(comment -> {
             if (!AuthorizationService.canWriteComment(user, article, comment)) {

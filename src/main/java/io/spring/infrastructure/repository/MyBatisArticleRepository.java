@@ -29,10 +29,17 @@ public class MyBatisArticleRepository implements ArticleRepository {
 
     private void createNew(Article article) {
         for (Tag tag : article.getTags()) {
-            if (!articleMapper.findTag(tag.getName())) {
+            Tag existingTag = articleMapper.findTagByName(tag.getName());
+            String tagId;
+            if (existingTag != null) {
+                // Use existing tag's ID
+                tagId = existingTag.getId();
+            } else {
+                // Insert new tag and use its ID
                 articleMapper.insertTag(tag);
+                tagId = tag.getId();
             }
-            articleMapper.insertArticleTagRelation(article.getId(), tag.getId());
+            articleMapper.insertArticleTagRelation(article.getId(), tagId);
         }
         articleMapper.insert(article);
     }

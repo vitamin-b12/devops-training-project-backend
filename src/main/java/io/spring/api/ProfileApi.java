@@ -42,6 +42,9 @@ public class ProfileApi {
     @PostMapping(path = "follow")
     public ResponseEntity follow(@PathVariable("username") String username,
                                  @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         return userRepository.findByUsername(username).map(target -> {
             FollowRelation followRelation = new FollowRelation(user.getId(), target.getId());
             userRepository.saveRelation(followRelation);
@@ -52,6 +55,9 @@ public class ProfileApi {
     @DeleteMapping(path = "follow")
     public ResponseEntity unfollow(@PathVariable("username") String username,
                                    @AuthenticationPrincipal User user) {
+        if (user == null) {
+            throw new org.springframework.security.authentication.AuthenticationCredentialsNotFoundException("Authentication required");
+        }
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isPresent()) {
             User target = userOptional.get();
